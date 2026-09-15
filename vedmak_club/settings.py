@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "apps.dashboard",
     "apps.titles",
     "apps.faq",
+    "apps.seed",
 ]
 
 MIDDLEWARE = [
