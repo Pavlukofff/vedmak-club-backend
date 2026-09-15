@@ -23,7 +23,7 @@ class PenaltySerializer(serializers.ModelSerializer):
 class PenaltyIssueSerializer(serializers.ModelSerializer):
     """Форма «Вынести взыскание» — раздел 4.17 плана. issued_by проставляется во view."""
 
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
     related_battle = serializers.PrimaryKeyRelatedField(
         queryset=Battle.objects.all(), required=False, allow_null=True,
     )

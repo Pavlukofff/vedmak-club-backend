@@ -18,7 +18,8 @@ class PenaltyListCreateView(generics.ListCreateAPIView):
 
     GET: у обычного участника — только своя история взысканий (личный
     кабинет); у ролей с canViewPenalties/canIssuePenalties — вся история,
-    с необязательным фильтром ?user=<id> (страница пользователя в админке).
+    с необязательным фильтром ?user=<username> (страница пользователя в
+    админке).
     POST: «вынести взыскание» — доступно только ролям с canIssuePenalties.
     """
 
@@ -31,8 +32,8 @@ class PenaltyListCreateView(generics.ListCreateAPIView):
         qs = Penalty.objects.select_related("user", "issued_by", "cancelled_by")
         user = self.request.user
         if can_view_all_penalties(user):
-            target = self.request.query_params.get("user")
-            return qs.filter(user_id=target) if target else qs
+            username = self.request.query_params.get("user")
+            return qs.filter(user__username=username) if username else qs
         return qs.filter(user=user)
 
     def perform_create(self, serializer):

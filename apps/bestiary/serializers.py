@@ -58,7 +58,7 @@ class MonsterKillWriteSerializer(serializers.ModelSerializer):
     reward_granted False -> True обрабатывает MonsterKill.save().
     """
 
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
     bestiary = serializers.PrimaryKeyRelatedField(queryset=Bestiary.objects.all())
     battle = serializers.PrimaryKeyRelatedField(
         queryset=Battle.objects.all(), required=False, allow_null=True,
