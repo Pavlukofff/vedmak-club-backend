@@ -1,0 +1,56 @@
+{% extends 'admin/base.html' %}
+
+{% load i18n %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+    {# Раздел 4.13 плана: Dashboard открывается первой при входе в админку — #}
+    {# лента последних событий и ближайшие дни рождения #}
+    <div class="flex flex-col lg:flex-row gap-6 mb-6">
+        <div class="border border-base-200 flex flex-col shadow-xs dark:border-base-800 rounded-lg py-3 grow">
+            <h2 class="border-b border-base-200 font-semibold text-important mb-3 pb-3 px-3 dark:border-base-800">
+                Лента событий
+            </h2>
+            {% if activity_feed %}
+                <ul class="flex flex-col gap-3 px-3">
+                    {% for entry in activity_feed %}
+                        <li class="flex flex-row gap-3 items-start border-b border-base-200 dark:border-base-800 pb-3 last:border-b-0 last:pb-0">
+                            <span class="material-symbols-outlined md-18 text-subtle">bolt</span>
+                            <div class="flex flex-col gap-0.5 min-w-0">
+                                <div class="text-important">{{ entry.message }}</div>
+                                <div class="text-subtle text-xs">{{ entry.created_at }}</div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-subtle px-3">Пока пусто.</p>
+            {% endif %}
+        </div>
+
+        <div class="border border-base-200 flex flex-col shadow-xs dark:border-base-800 rounded-lg py-3 lg:min-w-80 lg:max-w-80">
+            <h2 class="border-b border-base-200 font-semibold text-important mb-3 pb-3 px-3 dark:border-base-800">
+                Дни рождения на этой неделе
+            </h2>
+            {% if upcoming_birthdays %}
+                <ul class="flex flex-col gap-2 px-3">
+                    {% for row in upcoming_birthdays %}
+                        <li class="flex flex-row gap-2 items-center justify-between">
+                            <span class="text-important">{{ row.user.display_name }}</span>
+                            <span class="text-subtle text-xs">{{ row.next_birthday }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-subtle px-3">Никого нет в ближайшие 7 дней.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include "unfold/helpers/dashboard_default.html" %}
+{% endblock %}
