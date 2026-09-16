@@ -80,6 +80,43 @@ class TournamentSerializer(serializers.ModelSerializer):
         ]
 
 
+class TournamentCreateSerializer(serializers.ModelSerializer):
+    """«Создать турнир» — доступно только can_manage_tournaments (см. view).
+
+    status/bracket_type необязательны, берут значение по умолчанию модели
+    (upcoming/single), если не переданы явно.
+    """
+
+    class Meta:
+        model = Tournament
+        fields = [
+            "id", "title", "description", "date_start", "date_end",
+            "status", "bracket_type",
+        ]
+
+
+class TournamentUpdateSerializer(serializers.ModelSerializer):
+    """Редактирование турнира (в т.ч. смена статуса) — только can_manage_tournaments.
+
+    bracket_type менять нельзя после того, как сетка уже сгенерирована —
+    дальнейшая логика продвижения по сетке (single/double) завязана на нём.
+    """
+
+    class Meta:
+        model = Tournament
+        fields = [
+            "id", "title", "description", "date_start", "date_end",
+            "status", "bracket_type", "results_notes",
+        ]
+
+    def validate_bracket_type(self, value):
+        if self.instance and self.instance.bracket_generated and value != self.instance.bracket_type:
+            raise serializers.ValidationError(
+                "Нельзя менять формат сетки после того, как она сгенерирована.",
+            )
+        return value
+
+
 class TournamentDetailSerializer(TournamentSerializer):
     """Раздел «таблица посева»: полная сетка турнира, сгруппированная
 

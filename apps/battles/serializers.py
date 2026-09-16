@@ -18,14 +18,19 @@ class BattleSerializer(serializers.ModelSerializer):
         slug_field="username", queryset=User.objects.all(), required=False, allow_null=True,
     )
     recorded_by = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    tournament_title = serializers.SerializerMethodField()
 
     class Meta:
         model = Battle
         fields = [
             "id", "type", "fighter1", "fighter2", "winner",
-            "main_judge", "side_judge", "is_ranked", "tournament", "date", "notes", "recorded_by",
+            "main_judge", "side_judge", "is_ranked", "tournament", "tournament_title",
+            "date", "notes", "recorded_by",
         ]
         read_only_fields = ["recorded_by"]
+
+    def get_tournament_title(self, obj):
+        return obj.tournament.title if obj.tournament_id else None
 
     def validate(self, attrs):
         def current(field, default=None):
