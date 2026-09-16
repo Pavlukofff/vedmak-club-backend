@@ -134,10 +134,11 @@ class MeSerializer(serializers.ModelSerializer):
             "avatar", "school", "rank", "level", "experience", "balance",
             "first_name", "last_name", "name_visibility",
             "birth_date", "birth_date_visibility", "character_description",
+            "is_staff",
         ]
         read_only_fields = [
             "id", "username", "display_name", "email", "email_verified",
-            "avatar", "level", "experience", "balance",
+            "avatar", "level", "experience", "balance", "is_staff",
         ]
 
     def get_school(self, obj):
